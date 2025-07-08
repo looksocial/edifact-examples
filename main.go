@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/looksocial/edifact/examples/bookings/edifact_adapter"
-	"github.com/looksocial/edifact/pkg/edifact"
+	"github.com/looksocial/edifact"
+	"github.com/looksocial/edifact-examples/edifact_adapter"
 )
 
 func main() {
@@ -21,12 +21,15 @@ LOC+11+NLRTM:139:6'
 EQD+CN+CONT1234567'
 UNT+9+1'`
 
-	// Create a converter and register the IFTMBF adapter
-	converter := edifact.NewConverter()
-	converter.RegisterHandler("IFTMBF", edifact_adapter.NewIFTMBFAdapter())
+	// Parse the EDIFACT message using the new simplified API
+	message, err := edifact.Parse(edifactData)
+	if err != nil {
+		log.Fatalf("Failed to parse EDIFACT: %v", err)
+	}
 
-	// Convert the EDIFACT message to a Booking model
-	result, err := converter.ConvertToStructured(edifactData)
+	// Create the IFTMBF adapter and convert to Booking model
+	adapter := edifact_adapter.NewIFTMBFAdapter()
+	result, err := adapter.Handle(message)
 	if err != nil {
 		log.Fatalf("Failed to convert EDIFACT: %v", err)
 	}
@@ -39,4 +42,30 @@ UNT+9+1'`
 
 	fmt.Println("Booking JSON:")
 	fmt.Println(string(jsonData))
+
+	// Demonstrate the new simplified API functions
+	fmt.Println("\n=== Using New Simplified API ===")
+
+	// Get message info
+	info, err := edifact.GetMessageInfo(edifactData)
+	if err != nil {
+		log.Printf("Error getting message info: %v", err)
+	} else {
+		fmt.Printf("Message Info: %s\n", info.String())
+	}
+
+	// Get booking number
+	bookingNumber, err := edifact.GetElementValue(edifactData, "BGM", 2)
+	if err != nil {
+		log.Printf("Error getting booking number: %v", err)
+	} else {
+		fmt.Printf("Booking Number: %s\n", bookingNumber)
+	}
+
+	// Validate message
+	if edifact.IsValid(edifactData) {
+		fmt.Println("Message is valid")
+	} else {
+		fmt.Println("Message is invalid")
+	}
 }

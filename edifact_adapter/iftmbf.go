@@ -1,8 +1,8 @@
 package edifact_adapter
 
 import (
-	"github.com/looksocial/edifact/examples/bookings/models"
-	"github.com/looksocial/edifact/internal/model"
+	"github.com/looksocial/edifact-examples/models"
+	"github.com/looksocial/edifact/model"
 )
 
 // IFTMBFAdapter converts IFTMBF EDIFACT messages to Booking models.
