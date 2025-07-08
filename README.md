@@ -10,7 +10,7 @@ flowchart TD
     B -->|Parse| C["Tokenizer & Parser"]
     C -->|Build| D["model.Message"]
     D -->|Dispatch| E["Dispatcher/Router"]
-    E -->|IFTMBFAdapter (Custom Handler)| F["Booking Model (struct)"]
+    E -->|"IFTMBFAdapter (Custom Handler)"| F["Booking Model (struct)"]
     F -->|Marshal| G["JSON Output / DB Save"]
     style A fill:#f9f,stroke:#333,stroke-width:2px
     style G fill:#bbf,stroke:#333,stroke-width:2px
